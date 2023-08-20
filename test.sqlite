@@ -1,0 +1,92 @@
+----  feel table stream
+SELECT * from stream
+limit 20;
+
+--- feel table chat
+SELECT * from chat
+limit 20;
+
+----What are the unique games in the stream table?
+SELECT DISTINCT(game)
+from stream;
+
+----What are the unique channels in the stream table?
+SELECT DISTINCT(channel)
+from stream;
+
+---- Most popular games in stream table?
+SELECT game, count(*)
+from stream
+group by 1
+order by 2 desc;
+
+----- where are LoL viewers located?
+SELECT country,
+count(*)
+from stream
+where game is "League of Legends"
+group by 1
+order by 2 desc;
+
+---- list of players and number of streamers
+SELECT player, count(*)
+from stream
+group by player
+order by count(*) desc;
+
+---- create a new column named genre for each game use CASE for your logic
+SELECT game,
+  CASE 
+    WHEN game = "League of Legends" 
+      then "MOBA"
+    WHEN game = "Dota 2" 
+     then "MOBA"
+    WHEN game = "Heroes of the Storm" 
+     then "MOBA"
+    WHEN game = "Counter-Strike: Global Offensive" 
+     then "FPS"
+    WHEN game = "DayZ" 
+      then "Survival"
+    WHEN game = "ARK: Survival Evolved" 
+     then "Survival"
+    ELSE "Other"
+  END AS "Genre",
+  COUNT(*)
+FROM stream
+group by game
+order by count(*) desc;
+
+----- time column discovery
+SELECT time
+FROM stream
+LIMIT 10;
+
+---- testing a strftime function for seconds
+SELECT time,
+   strftime('%S', time)
+FROM stream
+GROUP BY 1
+LIMIT 20;
+
+----select a query that returns Hours and view count for each hour
+SELECT
+strftime("%H", time),
+count(*)
+from stream
+where country = "BR"
+group by 1
+order by 2 desc;
+
+---- join stream and chat tables
+SELECT *
+from stream s
+join chat c
+  on s.device_id = c.device_id
+limit 5;
+
+----  query for q12
+SELECT player, 
+game
+from stream
+where country = "BR"
+group by 1;
